@@ -17,5 +17,6 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('hem', App\Http\Controllers\HemDocumentController::class)->middleware(['auth']);
 Route::resource('qe', App\Http\Controllers\QeDocumentController::class)->middleware(['auth']);
+Route::resource('indihome', App\Http\Controllers\IndihomeDocumentController::class)->middleware(['auth']);
 
 require __DIR__.'/auth.php';

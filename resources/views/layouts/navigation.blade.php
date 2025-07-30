@@ -22,7 +22,7 @@
                     <x-nav-link :href="route('qe.index')" :active="request()->routeIs('qe.*')">
                         QE
                     </x-nav-link>
-                    <x-nav-link href="#">
+                    <x-nav-link :href="route('indihome.index')" :active="request()->routeIs('indihome.*')">
                         INDIHOME
                     </x-nav-link>
                 </div>
@@ -86,7 +86,7 @@
             <x-responsive-nav-link :href="route('qe.index')" :active="request()->routeIs('qe.*')">
                 QE
             </x-responsive-nav-link>
-            <x-responsive-nav-link href="#">
+            <x-responsive-nav-link :href="route('indihome.index')" :active="request()->routeIs('indihome.*')">
                 INDIHOME
             </x-responsive-nav-link>
         </div>
