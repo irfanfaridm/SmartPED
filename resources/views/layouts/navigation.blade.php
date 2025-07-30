@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="flex items-center">
-                        <img src="{{ asset('images.png') }}" alt="Telkom Logo" class="h-10 w-auto mr-3" />
+                        <img src="{{ asset('images.png') }}" alt="Telkom Logo" class="h-10 w-auto mr-3 rounded-full" />
                         <span class="text-white font-bold text-lg">Smart PED</span>
                     </a>
                 </div>
@@ -32,19 +32,31 @@
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
-
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
+                        <button class="flex items-center text-sm font-medium text-white hover:text-white hover:border-gray-300 focus:outline-none focus:text-white focus:border-gray-300 transition duration-150 ease-in-out">
+                            <!-- User Avatar (Outside Box) -->
+                            <div class="mr-2 -ml-1 relative z-10">
+                                @if(Auth::user()->avatar)
+                                    <img src="{{ Storage::url(Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}" class="h-9 w-9 rounded-full object-cover border-2 border-white shadow-sm">
+                                @else
+                                    <div class="h-9 w-9 rounded-full bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center border-2 border-white shadow-sm">
+                                        <span class="text-white text-xs font-bold">{{ Auth::user()->initials }}</span>
+                                    </div>
+                                @endif
+                            </div>
+                            
+                            <div class="flex items-center bg-red-800 rounded-lg px-3 py-1 -ml-4 pl-5 shadow-md">
+                                <div class="text-white">{{ Auth::user()->name }}</div>
+                                <div class="ms-1">
+                                    <svg class="fill-white h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
                             </div>
                         </button>
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
+                        <x-dropdown-link :href="route('profile.show')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
 
@@ -93,13 +105,25 @@
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+            <div class="px-4 flex items-center">
+                <!-- User Avatar (Mobile - Outside Box) -->
+                <div class="mr-3 -ml-1 relative z-10">
+                    @if(Auth::user()->avatar)
+                        <img src="{{ Storage::url(Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}" class="h-12 w-12 rounded-full object-cover border-2 border-white shadow-sm">
+                    @else
+                        <div class="h-12 w-12 rounded-full bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center border-2 border-white shadow-sm">
+                            <span class="text-white text-sm font-bold">{{ Auth::user()->initials }}</span>
+                        </div>
+                    @endif
+                </div>
+                <div class="bg-red-800 rounded-lg px-3 py-2 -ml-6 pl-8 shadow-md">
+                    <div class="font-medium text-base text-white">{{ Auth::user()->name }}</div>
+                    <div class="font-medium text-sm text-white text-opacity-80">{{ Auth::user()->email }}</div>
+                </div>
             </div>
 
             <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
+                <x-responsive-nav-link :href="route('profile.show')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
 

@@ -1,7 +1,7 @@
 <x-guest-layout>
 
     <div class="flex flex-col items-center mb-6">
-        <img src="/images.png" alt="Telkom Indonesia" class="w-16 h-16 mb-2">
+        <img src="/images.png" alt="Telkom Indonesia" class="w-16 h-16 mb-2 rounded-full">
         <span class="text-2xl font-bold text-primary">Smart PED</span>
     </div>
     <form method="POST" action="{{ route('register') }}">

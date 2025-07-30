@@ -70,7 +70,8 @@
                     <div class="text-3xl text-purple-600">🏠</div>
                 </div>
                 <div class="mt-4">
-                    <span class="text-gray-500 text-sm font-medium">Belum tersedia</span>
+                    <span class="text-green-600 text-sm font-medium">+{{ $indihomeGrowthPercentage ?? '0' }}%</span>
+                    <span class="text-gray-500 text-sm">dari bulan lalu</span>
                 </div>
             </div>
         </div>
@@ -110,7 +111,7 @@
                     <span class="text-red-600 mr-2">⚡</span>
                     Aksi Cepat
                 </h3>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <a href="{{ route('hem.create') }}" class="flex flex-col items-center p-4 bg-gradient-to-br from-red-50 to-red-100 rounded-lg hover:from-red-100 hover:to-red-200 transition-all duration-200">
                         <div class="text-2xl mb-2">📤</div>
                         <p class="text-sm font-medium text-red-700">Upload HEM</p>
@@ -119,13 +120,21 @@
                         <div class="text-2xl mb-2">📋</div>
                         <p class="text-sm font-medium text-blue-700">Lihat HEM</p>
                     </a>
-                    <a href="#" class="flex flex-col items-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg hover:from-green-100 hover:to-green-200 transition-all duration-200">
+                    <a href="{{ route('qe.create') }}" class="flex flex-col items-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg hover:from-green-100 hover:to-green-200 transition-all duration-200">
                         <div class="text-2xl mb-2">✅</div>
                         <p class="text-sm font-medium text-green-700">Upload QE</p>
                     </a>
-                    <a href="#" class="flex flex-col items-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg hover:from-purple-100 hover:to-purple-200 transition-all duration-200">
+                    <a href="{{ route('qe.index') }}" class="flex flex-col items-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg hover:from-green-100 hover:to-green-200 transition-all duration-200">
+                        <div class="text-2xl mb-2">📋</div>
+                        <p class="text-sm font-medium text-green-700">Lihat QE</p>
+                    </a>
+                    <a href="{{ route('indihome.create') }}" class="flex flex-col items-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg hover:from-purple-100 hover:to-purple-200 transition-all duration-200">
                         <div class="text-2xl mb-2">🏠</div>
                         <p class="text-sm font-medium text-purple-700">Upload INDIHOME</p>
+                    </a>
+                    <a href="{{ route('indihome.index') }}" class="flex flex-col items-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg hover:from-purple-100 hover:to-purple-200 transition-all duration-200">
+                        <div class="text-2xl mb-2">📋</div>
+                        <p class="text-sm font-medium text-purple-700">Lihat INDIHOME</p>
                     </a>
                 </div>
             </div>

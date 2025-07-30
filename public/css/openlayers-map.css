@@ -1,0 +1,116 @@
+/**
+ * OpenLayers Map Styling for SmartPED
+ */
+
+/* Map container styling */
+.ol-map {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+}
+
+/* Overview map styling */
+.ol-overview-map {
+    width: 100%;
+    height: 256px;
+    min-height: 256px;
+}
+
+/* Popup styling */
+.ol-popup {
+    position: absolute;
+    background-color: white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    border-radius: 0.5rem;
+    bottom: 12px;
+    left: -50px;
+    min-width: 180px;
+    z-index: 1000;
+}
+
+.ol-popup:after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -8px;
+    border-width: 8px;
+    border-style: solid;
+    border-color: white transparent transparent transparent;
+}
+
+/* Controls styling */
+.ol-control {
+    background-color: rgba(255,255,255,0.4);
+    border-radius: 4px;
+    padding: 2px;
+}
+
+.ol-control button {
+    background-color: rgba(230, 0, 0, 0.8);
+    color: white;
+    border-radius: 2px;
+    margin: 1px;
+    padding: 0;
+    font-size: 1.14em;
+    font-weight: bold;
+    width: 1.375em;
+    height: 1.375em;
+    line-height: .4em;
+    text-align: center;
+    cursor: pointer;
+}
+
+.ol-control button:hover {
+    background-color: rgba(230, 0, 0, 1);
+}
+
+/* Zoom controls */
+.ol-zoom {
+    top: 0.5em;
+    left: 0.5em;
+}
+
+/* Attribution styling */
+.ol-attribution {
+    font-size: 0.7rem;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px 0 0 0;
+}
+
+.ol-attribution a {
+    color: #e60000;
+    text-decoration: none;
+}
+
+.ol-attribution a:hover {
+    text-decoration: underline;
+}
+
+/* Coordinate picker styling */
+#olCoordinateInfo {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 4px;
+    padding: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    font-size: 0.9rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .ol-map {
+        min-height: 300px;
+    }
+    
+    .ol-overview-map {
+        height: 200px;
+        min-height: 200px;
+    }
+    
+    .ol-popup {
+        min-width: 140px;
+    }
+}
