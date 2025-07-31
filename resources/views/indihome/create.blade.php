@@ -139,7 +139,12 @@
                         </div>
                         <div class="flex flex-col">
                             <span class="text-lg font-semibold text-gray-800" id="displayDayName">{{ now()->format('l') }}</span>
-                            <span class="text-sm text-gray-600" id="displayTime">{{ now()->format('H:i') }}</span>
+                            <div class="flex items-center gap-1">
+                                <span class="text-sm text-gray-600" id="displayTime">{{ now()->format('H:i') }}</span>
+                                <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    WIB
+                                </span>
+                            </div>
                             <span class="text-xs text-red-600 font-medium">Dokumen akan tercatat dengan tanggal ini</span>
                         </div>
                     </div>

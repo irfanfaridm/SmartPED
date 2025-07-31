@@ -47,8 +47,30 @@ class ProfileController extends Controller
                 Storage::disk('public')->delete($user->avatar);
             }
 
-            // Store new avatar
-            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+            // Store new avatar with proper validation
+            $file = $request->file('avatar');
+            
+            // Validate file type
+            if (!$file->isValid()) {
+                return Redirect::back()->withErrors(['avatar' => 'File upload tidak valid.'])->withInput();
+            }
+
+            // Generate unique filename
+            $filename = time() . '_' . $user->id . '.' . $file->getClientOriginalExtension();
+            $avatarPath = $file->storeAs('avatars', $filename, 'public');
+            
+            if (!$avatarPath) {
+                return Redirect::back()->withErrors(['avatar' => 'Gagal menyimpan file avatar.'])->withInput();
+            }
+            
+            // Debug: Log the avatar path
+            \Log::info('Avatar uploaded successfully', [
+                'user_id' => $user->id,
+                'avatar_path' => $avatarPath,
+                'full_url' => Storage::url($avatarPath),
+                'file_exists' => Storage::disk('public')->exists($avatarPath)
+            ]);
+            
             $data['avatar'] = $avatarPath;
         }
 

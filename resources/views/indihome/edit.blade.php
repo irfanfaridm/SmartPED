@@ -167,7 +167,19 @@
                         </div>
                         <div class="flex flex-col">
                             <span class="text-lg font-semibold text-gray-800" id="displayDayName">{{ $document->created_at->format('l') }}</span>
-                            <span class="text-sm text-gray-600" id="displayTime">{{ $document->created_at->format('H:i') }}</span>
+                            <div class="flex items-center gap-1">
+                                <span class="text-sm text-gray-600" id="displayTime">{{ $document->created_at->format('H:i') }}</span>
+                                @php
+                                    $timezoneAbbr = \App\Helpers\TimeZoneHelper::getTimezoneAbbr($document->longitude);
+                                @endphp
+                                <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium 
+                                    @if($timezoneAbbr === 'WIB') bg-blue-100 text-blue-800
+                                    @elseif($timezoneAbbr === 'WITA') bg-green-100 text-green-800
+                                    @elseif($timezoneAbbr === 'WIT') bg-purple-100 text-purple-800
+                                    @else bg-gray-100 text-gray-800 @endif">
+                                    {{ $timezoneAbbr }}
+                                </span>
+                            </div>
                             <span class="text-xs text-red-600 font-medium">Dokumen akan tercatat dengan tanggal ini</span>
                         </div>
                     </div>

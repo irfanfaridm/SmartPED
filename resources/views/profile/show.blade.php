@@ -5,12 +5,31 @@
     <div class="max-w-4xl mx-auto px-4">
         <!-- Success Messages -->
         @if (session('status') === 'profile-updated')
-            <div class="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
-                <div class="flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            <div class="mb-6 flex items-center gap-3 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg shadow">
+                <div class="bg-green-600 text-white rounded-lg p-2 text-center min-w-[50px]">
+                    <div class="text-xs font-bold">{{ now()->format('M') }}</div>
+                    <div class="text-sm font-bold">{{ now()->format('d') }}</div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-5 h-5'>
+                        <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 13l4 4L19 7'/>
                     </svg>
-                    Profile updated successfully!
+                    <span>Profile updated successfully!</span>
+                </div>
+            </div>
+        @endif
+
+        @if (session('status') === 'avatar-removed')
+            <div class="mb-6 flex items-center gap-3 bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg shadow">
+                <div class="bg-blue-600 text-white rounded-lg p-2 text-center min-w-[50px]">
+                    <div class="text-xs font-bold">{{ now()->format('M') }}</div>
+                    <div class="text-sm font-bold">{{ now()->format('d') }}</div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-5 h-5'>
+                        <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'/>
+                    </svg>
+                    <span>Profile picture removed successfully!</span>
                 </div>
             </div>
         @endif
@@ -37,9 +56,13 @@
                 <!-- Avatar -->
                 <div class="flex justify-center -mt-16 mb-4">
                     <div class="relative">
-                        @if($user->avatar)
+                        @if($user->avatar && Storage::disk('public')->exists($user->avatar))
                             <img src="{{ Storage::url($user->avatar) }}" alt="{{ $user->name }}" 
-                                 class="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover">
+                                 class="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="w-32 h-32 rounded-full border-4 border-white shadow-lg bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center" style="display: none;">
+                                <span class="text-white text-3xl font-bold">{{ $user->initials }}</span>
+                            </div>
                         @else
                             <div class="w-32 h-32 rounded-full border-4 border-white shadow-lg bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center">
                                 <span class="text-white text-3xl font-bold">{{ $user->initials }}</span>

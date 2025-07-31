@@ -30,6 +30,13 @@
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
+                <!-- Timezone Display -->
+                <div class="flex items-center mr-4">
+                    <div id="current-time" class="text-white text-sm mr-2">{{ now()->format('H:i') }}</div>
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white bg-opacity-20 text-white">
+                        WIB
+                    </span>
+                </div>
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="flex items-center text-sm font-medium text-white hover:text-white hover:border-gray-300 focus:outline-none focus:text-white focus:border-gray-300 transition duration-150 ease-in-out">
@@ -105,6 +112,15 @@
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
+            <!-- Mobile Time Display -->
+            <div class="px-4 mb-3 flex items-center justify-center">
+                <div class="flex items-center">
+                    <div id="mobile-current-time" class="text-white text-sm mr-2">{{ now()->format('H:i') }}</div>
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white bg-opacity-20 text-white">
+                        WIB
+                    </span>
+                </div>
+            </div>
             <div class="px-4 flex items-center">
                 <!-- User Avatar (Mobile - Outside Box) -->
                 <div class="mr-3 -ml-1 relative z-10">
@@ -141,3 +157,29 @@
         </div>
     </div>
 </nav>
+
+<script>
+// Auto-updating time function
+function updateTime() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const timeString = `${hours}:${minutes}`;
+    
+    // Update desktop time
+    const timeElement = document.getElementById('current-time');
+    if (timeElement) {
+        timeElement.textContent = timeString;
+    }
+    
+    // Update mobile time
+    const mobileTimeElement = document.getElementById('mobile-current-time');
+    if (mobileTimeElement) {
+        mobileTimeElement.textContent = timeString;
+    }
+}
+
+// Update time immediately and then every second
+updateTime();
+setInterval(updateTime, 1000);
+</script>

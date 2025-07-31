@@ -66,9 +66,13 @@
                         <label class="block text-sm font-medium text-gray-700">Profile Picture</label>
                         <div class="flex items-center space-x-6">
                             <div class="relative">
-                                @if($user->avatar)
+                                @if($user->avatar && Storage::disk('public')->exists($user->avatar))
                                     <img src="{{ Storage::url($user->avatar) }}" alt="{{ $user->name }}" 
-                                         class="w-20 h-20 rounded-full object-cover border-2 border-gray-200">
+                                         class="w-20 h-20 rounded-full object-cover border-2 border-gray-200"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="w-20 h-20 rounded-full bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center border-2 border-gray-200" style="display: none;">
+                                        <span class="text-white text-lg font-bold">{{ $user->initials }}</span>
+                                    </div>
                                 @else
                                     <div class="w-20 h-20 rounded-full bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center border-2 border-gray-200">
                                         <span class="text-white text-lg font-bold">{{ $user->initials }}</span>

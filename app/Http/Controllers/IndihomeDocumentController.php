@@ -11,6 +11,16 @@ class IndihomeDocumentController extends Controller
         $lokasiList = \App\Models\IndihomeDocument::select('lokasi')->distinct()->pluck('lokasi');
         $query = \App\Models\IndihomeDocument::query();
         
+        // Search functionality
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('nama_dokumen', 'LIKE', '%' . $searchTerm . '%')
+                  ->orWhere('lokasi', 'LIKE', '%' . $searchTerm . '%')
+                  ->orWhere('keterangan', 'LIKE', '%' . $searchTerm . '%');
+            });
+        }
+        
         // Filter berdasarkan lokasi
         if ($request->filled('lokasi')) {
             $query->where('lokasi', $request->lokasi);
