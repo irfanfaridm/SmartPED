@@ -47,7 +47,17 @@ class IndihomeDocumentController extends Controller
         }
         
         $documents = $query->orderBy('created_at', 'desc')->get();
-        return view('indihome.index', compact('documents', 'lokasiList'));
+        
+        // Filter documents with coordinates for map display
+        $documentsWithCoords = $documents->where('latitude', '!=', null)->where('longitude', '!=', null);
+        
+        // Debug: Log the documents with coordinates
+        \Log::info('Documents with coordinates:', [
+            'count' => $documentsWithCoords->count(),
+            'data' => $documentsWithCoords->toArray()
+        ]);
+        
+        return view('indihome.index', compact('documents', 'lokasiList', 'documentsWithCoords'));
     }
 
     public function create()

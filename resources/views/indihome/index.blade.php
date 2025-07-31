@@ -45,7 +45,14 @@
         </div>
 
         <!-- Search Bar -->
-        <div class="mb-6">
+        <div class="mb-6 bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <div class="flex items-center gap-2 mb-3">
+                <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-5 h-5 text-red-600'>
+                    <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/>
+                </svg>
+                <h3 class="text-lg font-semibold text-gray-700">Cari Dokumen</h3>
+            </div>
+            
             <form method="GET" action="" class="flex flex-col md:flex-row gap-4">
                 <!-- Search Input -->
                 <div class="flex-1">
@@ -56,11 +63,11 @@
                             </svg>
                         </div>
                         <input type="text" name="search" id="search" placeholder="Cari dokumen berdasarkan nama, lokasi, atau keterangan..." 
-                               class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500" 
+                               class="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200 hover:border-gray-400" 
                                value="{{ request('search') }}">
                         @if(request('search'))
-                            <button type="button" onclick="clearSearch()" class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                                <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-5 h-5 text-gray-400 hover:text-gray-600'>
+                            <button type="button" onclick="clearSearch()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors">
+                                <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-5 h-5'>
                                     <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'/>
                                 </svg>
                             </button>
@@ -69,7 +76,7 @@
                 </div>
                 
                 <!-- Search Button -->
-                <button type="submit" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors font-semibold flex items-center gap-2">
+                <button type="submit" class="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-3 rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-200 font-semibold flex items-center gap-2 shadow-sm">
                     <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-5 h-5'>
                         <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/>
                     </svg>
@@ -79,38 +86,131 @@
         </div>
 
         <!-- Filter Options -->
-        <form method="GET" action="" class="mb-6">
-            <div class="flex flex-wrap items-center gap-4">
-                <div class="flex items-center gap-3">
-                    <label for="lokasi" class="font-semibold text-gray-700">Filter Lokasi:</label>
-                    <select name="lokasi" id="lokasi" class="rounded border-gray-300 px-3 py-2 focus:ring-red-500 focus:border-red-500" onchange="this.form.submit()">
-                        <option value="">Semua Lokasi</option>
-                        @foreach($lokasiList as $lokasi)
-                            <option value="{{ $lokasi }}" @if(request('lokasi') == $lokasi) selected @endif>{{ $lokasi }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="flex items-center gap-3">
-                    <label for="tanggal" class="font-semibold text-gray-700">Filter Tanggal:</label>
-                    <div class="flex items-center gap-2">
-                        <div class="bg-red-600 text-white rounded-lg p-1 text-center min-w-[40px]">
-                            <div class="text-xs font-bold">{{ now()->format('d') }}</div>
+        <div class="mb-6 bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <div class="flex items-center gap-2 mb-3">
+                <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-5 h-5 text-red-600'>
+                    <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z'/>
+                </svg>
+                <h3 class="text-lg font-semibold text-gray-700">Filter Dokumen</h3>
+            </div>
+            
+            <form method="GET" action="" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Location Filter -->
+                    <div class="space-y-2">
+                        <label for="lokasi" class="block text-sm font-medium text-gray-700 flex items-center gap-2">
+                            <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-4 h-4 text-red-600'>
+                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z'/>
+                            </svg>
+                            Filter Lokasi
+                        </label>
+                        <div class="relative">
+                            <select name="lokasi" id="lokasi" 
+                                    class="w-full appearance-none bg-white border border-gray-300 rounded-lg px-4 py-3 pr-10 text-gray-700 focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200 hover:border-gray-400" 
+                                    onchange="this.form.submit()">
+                                <option value="" class="text-gray-500">Pilih lokasi...</option>
+                                @foreach($lokasiList as $lokasi)
+                                    <option value="{{ $lokasi }}" @if(request('lokasi') == $lokasi) selected @endif class="text-gray-700">{{ $lokasi }}</option>
+                                @endforeach
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-5 h-5 text-gray-400'>
+                                    <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/>
+                                </svg>
+                            </div>
                         </div>
-                        <select name="tanggal" id="tanggal" class="rounded border-gray-300 px-3 py-2 focus:ring-red-500 focus:border-red-500" onchange="this.form.submit()">
-                            <option value="">Semua Tanggal</option>
-                            <option value="hari_ini" @if(request('tanggal') == 'hari_ini') selected @endif>Hari Ini</option>
-                            <option value="minggu_ini" @if(request('tanggal') == 'minggu_ini') selected @endif>Minggu Ini</option>
-                            <option value="bulan_ini" @if(request('tanggal') == 'bulan_ini') selected @endif>Bulan Ini</option>
-                            <option value="tahun_ini" @if(request('tanggal') == 'tahun_ini') selected @endif>Tahun Ini</option>
-                        </select>
+                    </div>
+
+                    <!-- Date Filter -->
+                    <div class="space-y-2">
+                        <label for="tanggal" class="block text-sm font-medium text-gray-700 flex items-center gap-2">
+                            <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-4 h-4 text-red-600'>
+                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'/>
+                            </svg>
+                            Filter Tanggal
+                        </label>
+                        <div class="flex items-center gap-3">
+                            <div class="bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg p-2 text-center min-w-[50px] shadow-sm">
+                                <div class="text-xs font-bold">{{ now()->format('M') }}</div>
+                                <div class="text-lg font-bold">{{ now()->format('d') }}</div>
+                            </div>
+                            <div class="relative flex-1">
+                                <select name="tanggal" id="tanggal" 
+                                        class="w-full appearance-none bg-white border border-gray-300 rounded-lg px-4 py-3 pr-10 text-gray-700 focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200 hover:border-gray-400" 
+                                        onchange="this.form.submit()">
+                                    <option value="" class="text-gray-500">Pilih periode...</option>
+                                    <option value="hari_ini" @if(request('tanggal') == 'hari_ini') selected @endif class="text-gray-700">Hari Ini</option>
+                                    <option value="minggu_ini" @if(request('tanggal') == 'minggu_ini') selected @endif class="text-gray-700">Minggu Ini</option>
+                                    <option value="bulan_ini" @if(request('tanggal') == 'bulan_ini') selected @endif class="text-gray-700">Bulan Ini</option>
+                                    <option value="tahun_ini" @if(request('tanggal') == 'tahun_ini') selected @endif class="text-gray-700">Tahun Ini</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                    <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-5 h-5 text-gray-400'>
+                                        <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!-- Preserve search parameter -->
-            @if(request('search'))
-                <input type="hidden" name="search" value="{{ request('search') }}">
-            @endif
-        </form>
+
+                <!-- Active Filters Display -->
+                @if(request('lokasi') || request('tanggal'))
+                    <div class="flex flex-wrap items-center gap-2 pt-3 border-t border-gray-200">
+                        <span class="text-sm font-medium text-gray-600">Filter Aktif:</span>
+                        @if(request('lokasi'))
+                            <span class="inline-flex items-center gap-1 px-3 py-1 bg-red-100 text-red-800 text-sm rounded-full">
+                                <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-3 h-3'>
+                                    <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z'/>
+                                </svg>
+                                {{ request('lokasi') }}
+                                <button type="button" onclick="removeFilter('lokasi')" class="ml-1 text-red-600 hover:text-red-800">
+                                    <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-3 h-3'>
+                                        <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'/>
+                                    </svg>
+                                </button>
+                            </span>
+                        @endif
+                        @if(request('tanggal'))
+                            <span class="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
+                                <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-3 h-3'>
+                                    <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'/>
+                                </svg>
+                                @switch(request('tanggal'))
+                                    @case('hari_ini')
+                                        Hari Ini
+                                        @break
+                                    @case('minggu_ini')
+                                        Minggu Ini
+                                        @break
+                                    @case('bulan_ini')
+                                        Bulan Ini
+                                        @break
+                                    @case('tahun_ini')
+                                        Tahun Ini
+                                        @break
+                                    @default
+                                        {{ request('tanggal') }}
+                                @endswitch
+                                <button type="button" onclick="removeFilter('tanggal')" class="ml-1 text-blue-600 hover:text-blue-800">
+                                    <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-3 h-3'>
+                                        <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'/>
+                                    </svg>
+                                </button>
+                            </span>
+                        @endif
+                        <button type="button" onclick="clearAllFilters()" class="text-sm text-gray-500 hover:text-gray-700 underline">
+                            Hapus Semua Filter
+                        </button>
+                    </div>
+                @endif
+
+                <!-- Preserve search parameter -->
+                @if(request('search'))
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                @endif
+            </form>
+        </div>
 
         <!-- Search Results Info -->
         @if(request('search') || request('lokasi') || request('tanggal'))
@@ -248,7 +348,7 @@
         @php
             $documentsWithCoords = $documents->where('latitude', '!=', null)->where('longitude', '!=', null);
         @endphp
-        @if($documentsWithCoords->count() > 0)
+        <!-- Peta Lokasi Dokumen - Always Visible -->
         <div class="mb-6">
             <h3 class="text-lg font-semibold text-gray-700 mb-3 flex items-center gap-2">
                 <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-5 h-5 text-red-600'>
@@ -256,9 +356,35 @@
                 </svg>
                 Peta Lokasi Dokumen
             </h3>
-            <div id="olOverviewMap" class="w-full h-64 rounded-lg border border-gray-200"></div>
+            
+            @if($documentsWithCoords->count() > 0)
+                <!-- Map with coordinates -->
+                <div id="olOverviewMap" class="w-full h-64 rounded-lg border border-gray-200 bg-gray-50 relative">
+                    <div id="olMapLoading" class="absolute inset-0 flex items-center justify-center bg-gray-50 text-gray-500">
+                        <div class="text-center">
+                            <svg class="animate-spin h-8 w-8 mx-auto mb-2 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <p>Memuat peta...</p>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <!-- Map without coordinates - show default map -->
+                <div id="olOverviewMap" class="w-full h-64 rounded-lg border border-gray-200 bg-gray-50 relative">
+                    <div id="olMapLoading" class="absolute inset-0 flex items-center justify-center bg-gray-50 text-gray-500">
+                        <div class="text-center">
+                            <svg class="animate-spin h-8 w-8 mx-auto mb-2 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <p>Memuat peta...</p>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
-        @endif
         
         <!-- Statistik Dokumen -->
         <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -480,6 +606,18 @@ function clearSearch() {
     window.location.href = '{{ route("indihome.index") }}';
 }
 
+// Remove specific filter
+function removeFilter(filterName) {
+    const url = new URL(window.location);
+    url.searchParams.delete(filterName);
+    window.location.href = url.toString();
+}
+
+// Clear all filters
+function clearAllFilters() {
+    window.location.href = '{{ route("indihome.index") }}';
+}
+
 // Auto-submit search on Enter key
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('search');
@@ -491,6 +629,18 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    
+    // Add hover effects to dropdowns
+    const selects = document.querySelectorAll('select');
+    selects.forEach(select => {
+        select.addEventListener('focus', function() {
+            this.parentElement.classList.add('ring-2', 'ring-red-500', 'ring-opacity-50');
+        });
+        
+        select.addEventListener('blur', function() {
+            this.parentElement.classList.remove('ring-2', 'ring-red-500', 'ring-opacity-50');
+        });
+    });
 });
 </script>
 

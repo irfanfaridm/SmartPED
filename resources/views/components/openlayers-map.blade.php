@@ -41,17 +41,62 @@
 {{-- Map Initialization Script --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        @if(isset($documentsWithCoords) && $documentsWithCoords->count() > 0)
-        // Make documents available to OpenLayers script
-        const documentsWithCoords = @json($documentsWithCoords);
+        // Make documents available to OpenLayers script globally
+        window.documentsWithCoords = @json($documentsWithCoords ?? collect());
         
-        // Initialize overview map with all document locations
-        if (documentsWithCoords && documentsWithCoords.length > 0) {
-            setTimeout(() => {
-                initOpenLayersOverviewMap(documentsWithCoords);
-            }, 500);
-        }
-        @endif
+        // Always initialize map, with or without coordinates
+        const checkOpenLayers = setInterval(() => {
+            if (typeof ol !== 'undefined' && typeof initOpenLayersOverviewMap !== 'undefined' && typeof initOpenLayersEmptyMap !== 'undefined') {
+                clearInterval(checkOpenLayers);
+                setTimeout(() => {
+                    console.log('Checking documents:', window.documentsWithCoords);
+                    console.log('Documents length:', window.documentsWithCoords ? window.documentsWithCoords.length : 0);
+                    console.log('Documents data:', JSON.stringify(window.documentsWithCoords));
+                    
+                    if (window.documentsWithCoords && window.documentsWithCoords.length > 0) {
+                        console.log('Initializing map with coordinates');
+                        // Initialize map with document coordinates
+                        initOpenLayersOverviewMap(window.documentsWithCoords);
+                        
+                        // Double-check after a short delay to ensure overlay is removed
+                        setTimeout(() => {
+                            const mapContainer = document.getElementById('olOverviewMap');
+                            if (mapContainer) {
+                                const existingOverlays = mapContainer.querySelectorAll('.absolute.inset-0');
+                                if (existingOverlays.length > 0) {
+                                    console.log('Removing existing overlays after coordinate detection');
+                                    existingOverlays.forEach(overlay => overlay.remove());
+                                }
+                            }
+                        }, 500);
+                    } else {
+                        console.log('Initializing empty map');
+                        // Initialize empty map (default to Indonesia)
+                        initOpenLayersEmptyMap();
+                    }
+                }, 100);
+            }
+        }, 100);
+        
+        // Timeout after 5 seconds
+        setTimeout(() => {
+            clearInterval(checkOpenLayers);
+            console.warn('OpenLayers failed to load within timeout');
+            
+            // Hide loading indicator and show timeout message
+            const loadingIndicator = document.getElementById('olMapLoading');
+            if (loadingIndicator) {
+                loadingIndicator.innerHTML = `
+                    <div class="text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-8 h-8 mx-auto mb-2 text-red-600">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <p>Timeout memuat peta</p>
+                        <p class="text-sm mt-1">Silakan refresh halaman</p>
+                    </div>
+                `;
+            }
+        }, 5000);
         
         // Close modal when clicking outside
         const mapModal = document.getElementById('olMapModal');

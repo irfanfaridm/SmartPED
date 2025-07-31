@@ -108,42 +108,193 @@ function initOpenLayersMap(lat, lng, title, location) {
 }
 
 /**
- * Initialize overview map with multiple markers
- * @param {Array} documents - Array of documents with latitude and longitude
+ * Initialize empty map (default to Indonesia)
  */
-function initOpenLayersOverviewMap(documents) {
-    if (!documents || documents.length === 0) return;
-    
+function initOpenLayersEmptyMap() {
     // Create map container if not exists
     const mapContainer = document.getElementById('olOverviewMap');
-    if (!mapContainer) return;
+    if (!mapContainer) {
+        return;
+    }
     
     // Clear previous map instance
     mapContainer.innerHTML = '';
     
     // Create map
-    olOverviewMap = new ol.Map({
-        target: 'olOverviewMap',
-        layers: [
-            new ol.layer.Tile({
-                source: new ol.source.OSM()
+    try {
+        console.log('Initializing overview map...');
+        olOverviewMap = new ol.Map({
+            target: 'olOverviewMap',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([106.8456, -6.2088]), // Default to Jakarta
+                zoom: 5 // Zoom out to show more of Indonesia
             })
-        ],
-        view: new ol.View({
-            center: ol.proj.fromLonLat([106.8456, -6.2088]), // Default to Jakarta
-            zoom: 10
-        })
-    });
+        });
+        console.log('Overview map initialized successfully');
+        
+        // Hide loading indicator
+        const loadingIndicator = document.getElementById('olMapLoading');
+        if (loadingIndicator) {
+            loadingIndicator.style.display = 'none';
+        }
+        
+        // Only add overlay message if there are no documents with coordinates
+        if (!window.documentsWithCoords || window.documentsWithCoords.length === 0) {
+            console.log('Adding overlay message - no coordinates found');
+            const overlayElement = document.createElement('div');
+            overlayElement.className = 'absolute inset-0 flex items-center justify-center bg-white bg-opacity-90 rounded-lg pointer-events-none';
+            overlayElement.innerHTML = `
+                <div class="text-center text-gray-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-12 h-12 mx-auto mb-3 text-gray-400">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                    </svg>
+                    <p class="text-lg font-medium">Tidak ada dokumen dengan koordinat</p>
+                    <p class="text-sm mt-1">Upload dokumen dengan koordinat untuk menampilkan lokasi</p>
+                </div>
+            `;
+            mapContainer.appendChild(overlayElement);
+        } else {
+            console.log('No overlay needed - coordinates found');
+            // Remove any existing overlays if coordinates are found
+            const existingOverlays = mapContainer.querySelectorAll('.absolute.inset-0');
+            existingOverlays.forEach(overlay => overlay.remove());
+        }
+        
+    } catch (error) {
+        // Show error message
+        const mapContainer = document.getElementById('olOverviewMap');
+        if (mapContainer) {
+            mapContainer.innerHTML = `
+                <div class="flex items-center justify-center h-full bg-gray-50 text-gray-500">
+                    <div class="text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-8 h-8 mx-auto mb-2 text-red-600">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                        </svg>
+                        <p>Gagal memuat peta</p>
+                        <p class="text-sm mt-1">${error.message}</p>
+                    </div>
+                </div>
+            `;
+        }
+        return;
+    }
+}
+
+/**
+ * Initialize overview map with multiple markers
+ * @param {Array} documents - Array of documents with latitude and longitude
+ */
+function initOpenLayersOverviewMap(documents) {
+    console.log('initOpenLayersOverviewMap called with:', documents);
+    
+    if (!documents || documents.length === 0) {
+        console.log('No documents provided to overview map');
+        return;
+    }
+    
+    // Create map container if not exists
+    const mapContainer = document.getElementById('olOverviewMap');
+    if (!mapContainer) {
+        console.log('Map container not found');
+        return;
+    }
+    
+    console.log('Initializing overview map with', documents.length, 'documents');
+    
+    // Clear previous map instance and any overlays
+    mapContainer.innerHTML = '';
+    
+    // Remove any existing overlay messages
+    const existingOverlays = mapContainer.querySelectorAll('.absolute.inset-0');
+    existingOverlays.forEach(overlay => overlay.remove());
+    
+    // Create map
+    try {
+        olOverviewMap = new ol.Map({
+            target: 'olOverviewMap',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([106.8456, -6.2088]), // Default to Jakarta
+                zoom: 10
+            })
+        });
+        
+        // Hide loading indicator
+        const loadingIndicator = document.getElementById('olMapLoading');
+        if (loadingIndicator) {
+            loadingIndicator.style.display = 'none';
+        }
+    } catch (error) {
+        
+        // Show error message
+        const mapContainer = document.getElementById('olOverviewMap');
+        if (mapContainer) {
+            mapContainer.innerHTML = `
+                <div class="flex items-center justify-center h-full bg-gray-50 text-gray-500">
+                    <div class="text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-8 h-8 mx-auto mb-2 text-red-600">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                        </svg>
+                        <p>Gagal memuat peta</p>
+                        <p class="text-sm mt-1">${error.message}</p>
+                    </div>
+                </div>
+            `;
+        }
+        return;
+    }
     
     // Add markers for each document
     const features = documents.map(doc => {
-        return new ol.Feature({
-            geometry: new ol.geom.Point(ol.proj.fromLonLat([parseFloat(doc.longitude), parseFloat(doc.latitude)])),
+        console.log('Creating marker for document:', doc.nama_dokumen, 'at coordinates:', doc.latitude, doc.longitude);
+        console.log('Coordinate types - Lat:', typeof doc.latitude, 'Lng:', typeof doc.longitude);
+        
+        const lat = parseFloat(doc.latitude);
+        const lng = parseFloat(doc.longitude);
+        
+        console.log('Parsed coordinates - Lat:', lat, 'Lng:', lng);
+        
+        if (isNaN(lat) || isNaN(lng)) {
+            console.error('Invalid coordinates for document:', doc.nama_dokumen, 'Lat:', doc.latitude, 'Lng:', doc.longitude);
+            return null;
+        }
+        
+        // Test with a known coordinate to see if the map works
+        if (doc.nama_dokumen === 'test') {
+            console.log('Testing with known coordinates for Jakarta:', lat, lng);
+        }
+        
+        const feature = new ol.Feature({
+            geometry: new ol.geom.Point(ol.proj.fromLonLat([lng, lat])),
             name: doc.nama_dokumen,
             description: doc.lokasi,
             id: doc.id
         });
-    });
+        
+        console.log('Created feature for:', doc.nama_dokumen, 'at pixel coordinates:', ol.proj.fromLonLat([lng, lat]));
+        return feature;
+    }).filter(feature => feature !== null);
+    
+    // Add a test marker at Jakarta if no features exist
+    if (features.length === 0) {
+        console.log('No features found, adding test marker at Jakarta');
+        const testFeature = new ol.Feature({
+            geometry: new ol.geom.Point(ol.proj.fromLonLat([106.8456, -6.2088])),
+            name: 'Test Marker',
+            description: 'Jakarta, Indonesia',
+            id: 'test'
+        });
+        features.push(testFeature);
+    }
     
     const vectorSource = new ol.source.Vector({
         features: features
@@ -151,21 +302,36 @@ function initOpenLayersOverviewMap(documents) {
     
     const markerStyle = new ol.style.Style({
         image: new ol.style.Circle({
-            radius: 6,
+            radius: 10,
             fill: new ol.style.Fill({color: '#e60000'}),
             stroke: new ol.style.Stroke({
                 color: '#ffffff',
-                width: 2
+                width: 3
             })
         })
     });
+    
+    console.log('Created', features.length, 'features for markers');
     
     const vectorLayer = new ol.layer.Vector({
         source: vectorSource,
         style: markerStyle
     });
     
+    console.log('Vector layer created with', vectorSource.getFeatures().length, 'features');
     olOverviewMap.addLayer(vectorLayer);
+    console.log('Added vector layer to map');
+    
+    // Debug: Check if features are visible
+    setTimeout(() => {
+        const features = vectorSource.getFeatures();
+        console.log('Vector source now has', features.length, 'features');
+        features.forEach((feature, index) => {
+            const geom = feature.getGeometry();
+            const coords = geom.getCoordinates();
+            console.log(`Feature ${index}:`, feature.get('name'), 'at coordinates:', coords);
+        });
+    }, 1000);
     
     // Create popup overlay
     const popupElement = document.createElement('div');
@@ -182,11 +348,13 @@ function initOpenLayersOverviewMap(documents) {
     
     // Add click interaction
     olOverviewMap.on('click', function(evt) {
+        console.log('Map clicked at pixel:', evt.pixel);
         const feature = olOverviewMap.forEachFeatureAtPixel(evt.pixel, function(feature) {
             return feature;
         });
         
         if (feature) {
+            console.log('Clicked on feature:', feature.get('name'));
             const coordinates = feature.getGeometry().getCoordinates();
             popupElement.innerHTML = `
                 <div class="bg-white rounded-lg shadow-lg p-3 max-w-xs">
@@ -200,6 +368,7 @@ function initOpenLayersOverviewMap(documents) {
             `;
             popup.setPosition(coordinates);
         } else {
+            console.log('No feature clicked');
             popup.setPosition(undefined);
         }
     });
@@ -213,11 +382,15 @@ function initOpenLayersOverviewMap(documents) {
     
     // Fit view to show all markers
     if (features.length > 0) {
+        console.log('Fitting view to show', features.length, 'markers');
         const extent = vectorSource.getExtent();
         olOverviewMap.getView().fit(extent, {
             padding: [50, 50, 50, 50],
             maxZoom: 15
         });
+        console.log('Map view fitted to markers');
+    } else {
+        console.log('No features to fit view to');
     }
 }
 
@@ -406,8 +579,13 @@ function confirmOpenLayersCoordinate() {
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize overview map if container exists
     const overviewMapContainer = document.getElementById('olOverviewMap');
-    if (overviewMapContainer && typeof documentsWithCoords !== 'undefined' && documentsWithCoords.length > 0) {
-        initOpenLayersOverviewMap(documentsWithCoords);
+    
+    if (overviewMapContainer) {
+        if (typeof window.documentsWithCoords !== 'undefined' && window.documentsWithCoords.length > 0) {
+            initOpenLayersOverviewMap(window.documentsWithCoords);
+        } else {
+            initOpenLayersEmptyMap();
+        }
     }
     
     // Close modal when clicking outside

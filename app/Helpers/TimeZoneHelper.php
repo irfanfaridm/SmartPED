@@ -8,21 +8,29 @@ class TimeZoneHelper
 {
     /**
      * Get timezone abbreviation based on longitude
+     * 
+     * @param float|null $longitude
+     * @return string
      */
-    public static function getTimezoneAbbr($longitude = null)
+    public static function getTimezoneAbbr($longitude)
     {
         if ($longitude === null) {
-            // Default to WIB (Jakarta)
-            return 'WIB';
+            return 'WIB'; // Default to WIB
         }
-
-        // Indonesia timezone boundaries (approximate)
-        if ($longitude >= 105) {
-            return 'WIB'; // Western Indonesia Time (UTC+7)
-        } elseif ($longitude >= 120) {
-            return 'WITA'; // Central Indonesia Time (UTC+8)
+        
+        // Indonesia timezone boundaries
+        // WIB: 105°E to 127.5°E (Jakarta, Sumatra, Java, Kalimantan)
+        // WITA: 127.5°E to 142.5°E (Sulawesi, Bali, Nusa Tenggara)
+        // WIT: 142.5°E to 157.5°E (Maluku, Papua)
+        
+        if ($longitude >= 105 && $longitude < 127.5) {
+            return 'WIB';
+        } elseif ($longitude >= 127.5 && $longitude < 142.5) {
+            return 'WITA';
+        } elseif ($longitude >= 142.5 && $longitude <= 157.5) {
+            return 'WIT';
         } else {
-            return 'WIT'; // Eastern Indonesia Time (UTC+9)
+            return 'WIB'; // Default for coordinates outside Indonesia
         }
     }
 
