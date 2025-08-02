@@ -82,6 +82,110 @@
             <label class="block mb-1 font-semibold text-gray-700">Keterangan</label>
             <textarea name="keterangan" class="w-full rounded border-gray-300 bg-white text-gray-900" placeholder="Contoh: Pembangunan ODC selesai pada tanggal 30/07/2025">{{ old('keterangan') }}</textarea>
         </div>
+
+        <!-- Field baru untuk studi kasus -->
+        <div class="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
+            <h3 class="text-lg font-semibold text-blue-800 mb-4 flex items-center gap-2">
+                <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-5 h-5'>
+                    <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10'/>
+                </svg>
+                Informasi Proyek (Opsional)
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Site Code -->
+                <div class="space-y-2">
+                    <label for="site_code" class="block text-sm font-medium text-gray-700">Kode Site</label>
+                    <input type="text" name="site_code" id="site_code" placeholder="Contoh: TSEL BOO821" 
+                           class="w-full rounded border-gray-300 bg-white text-gray-900" value="{{ old('site_code') }}">
+                    <small class="text-gray-500">Kode identifikasi site (opsional)</small>
+                </div>
+
+                <!-- Project Type -->
+                <div class="space-y-2">
+                    <label for="project_type" class="block text-sm font-medium text-gray-700">Jenis Proyek</label>
+                    <select name="project_type" id="project_type" class="w-full rounded border-gray-300 bg-white text-gray-900">
+                        <option value="">Pilih jenis proyek...</option>
+                        @foreach($projectTypes as $key => $value)
+                            <option value="{{ $key }}" @if(old('project_type') == $key) selected @endif>{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Implementation Status -->
+                <div class="space-y-2">
+                    <label for="implementation_status" class="block text-sm font-medium text-gray-700">Status Implementasi</label>
+                    <select name="implementation_status" id="implementation_status" class="w-full rounded border-gray-300 bg-white text-gray-900">
+                        <option value="">Pilih status...</option>
+                        @foreach($implementationStatuses as $key => $value)
+                            <option value="{{ $key }}" @if(old('implementation_status') == $key) selected @endif>{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Document Category -->
+                <div class="space-y-2">
+                    <label for="document_category" class="block text-sm font-medium text-gray-700">Kategori Dokumen</label>
+                    <select name="document_category" id="document_category" class="w-full rounded border-gray-300 bg-white text-gray-900">
+                        <option value="">Pilih kategori...</option>
+                        @foreach($documentCategories as $key => $value)
+                            <option value="{{ $key }}" @if(old('document_category') == $key) selected @endif>{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Order Reference -->
+                <div class="space-y-2">
+                    <label for="order_reference" class="block text-sm font-medium text-gray-700">Referensi Order</label>
+                    <input type="text" name="order_reference" id="order_reference" placeholder="Contoh: ORD-2025-001" 
+                           class="w-full rounded border-gray-300 bg-white text-gray-900" value="{{ old('order_reference') }}">
+                    <small class="text-gray-500">Referensi order microdemand (opsional)</small>
+                </div>
+
+                <!-- Completion Date -->
+                <div class="space-y-2">
+                    <label for="completion_date" class="block text-sm font-medium text-gray-700">Tanggal Selesai</label>
+                    <input type="date" name="completion_date" id="completion_date" 
+                           class="w-full rounded border-gray-300 bg-white text-gray-900" value="{{ old('completion_date') }}">
+                    <small class="text-gray-500">Tanggal selesai implementasi (opsional)</small>
+                </div>
+            </div>
+
+            <!-- Equipment Specs -->
+            <div class="mt-4 space-y-2">
+                <label for="equipment_specs" class="block text-sm font-medium text-gray-700">Spesifikasi Perangkat</label>
+                <textarea name="equipment_specs" id="equipment_specs" rows="3" 
+                          class="w-full rounded border-gray-300 bg-white text-gray-900" 
+                          placeholder="Contoh: Edge OTN Huawei OptiX RTN 950A, Mini OLT ZTE ZXA10 C320, dll">{{ old('equipment_specs') }}</textarea>
+                <small class="text-gray-500">Spesifikasi perangkat yang digunakan dalam implementasi</small>
+            </div>
+
+            <!-- Capacity Info -->
+            <div class="mt-4 space-y-2">
+                <label for="capacity_info" class="block text-sm font-medium text-gray-700">Informasi Kapasitas</label>
+                <textarea name="capacity_info" id="capacity_info" rows="3" 
+                          class="w-full rounded border-gray-300 bg-white text-gray-900" 
+                          placeholder="Contoh: Kapasitas 1000 pelanggan, Demand saat ini 500 pelanggan">{{ old('capacity_info') }}</textarea>
+                <small class="text-gray-500">Informasi kapasitas dan demand yang dipenuhi</small>
+            </div>
+
+            <!-- Technical Details -->
+            <div class="mt-4 space-y-2">
+                <label for="technical_details" class="block text-sm font-medium text-gray-700">Detail Teknis</label>
+                <textarea name="technical_details" id="technical_details" rows="3" 
+                          class="w-full rounded border-gray-300 bg-white text-gray-900" 
+                          placeholder="Contoh: Implementasi menggunakan teknologi GPON, Topologi star, dll">{{ old('technical_details') }}</textarea>
+                <small class="text-gray-500">Detail teknis implementasi dan konfigurasi</small>
+            </div>
+
+            <!-- Remarks -->
+            <div class="mt-4 space-y-2">
+                <label for="remarks" class="block text-sm font-medium text-gray-700">Catatan Tambahan</label>
+                <textarea name="remarks" id="remarks" rows="2" 
+                          class="w-full rounded border-gray-300 bg-white text-gray-900" 
+                          placeholder="Catatan tambahan atau informasi penting lainnya">{{ old('remarks') }}</textarea>
+            </div>
+        </div>
         
         <div class="mb-4">
             <label class="block mb-1 font-semibold text-gray-700">Pilih Tanggal Dokumen</label>
@@ -160,11 +264,76 @@
 </div>
 
 <script>
+// Data koordinat dari PHP
+const koordinatData = @json($koordinatData);
+
 document.addEventListener('DOMContentLoaded', function() {
     const dropdown = document.getElementById('lokasi-dropdown');
     const input = document.getElementById('lokasi-input');
     const toggleBtn = document.getElementById('toggle-lokasi');
+    const latitudeInput = document.getElementById('latitude');
+    const longitudeInput = document.getElementById('longitude');
     let isNewLocation = false;
+
+    // Fungsi untuk mengisi koordinat otomatis
+    function fillCoordinates(locationName) {
+        if (koordinatData[locationName]) {
+            const coords = koordinatData[locationName];
+            latitudeInput.value = coords.lat;
+            longitudeInput.value = coords.lng;
+            
+            // Tampilkan notifikasi sukses
+            showCoordinateNotification(`Koordinat ${locationName} berhasil diisi otomatis!`);
+        } else {
+            // Kosongkan koordinat jika lokasi tidak ditemukan
+            latitudeInput.value = '';
+            longitudeInput.value = '';
+        }
+    }
+
+    // Fungsi untuk menampilkan notifikasi
+    function showCoordinateNotification(message) {
+        // Hapus notifikasi yang sudah ada
+        const existingNotification = document.querySelector('.coordinate-notification');
+        if (existingNotification) {
+            existingNotification.remove();
+        }
+
+        // Buat notifikasi baru
+        const notification = document.createElement('div');
+        notification.className = 'coordinate-notification fixed top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 transform transition-all duration-300';
+        notification.innerHTML = `
+            <div class="flex items-center gap-2">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Hapus notifikasi setelah 3 detik
+        setTimeout(() => {
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    // Event listener untuk dropdown lokasi
+    dropdown.addEventListener('change', function() {
+        const selectedLocation = this.value;
+        if (selectedLocation) {
+            fillCoordinates(selectedLocation);
+        }
+    });
+
+    // Event listener untuk input lokasi baru
+    input.addEventListener('input', function() {
+        // Kosongkan koordinat saat mengetik lokasi baru
+        latitudeInput.value = '';
+        longitudeInput.value = '';
+    });
 
     // Toggle antara dropdown dan input
     toggleBtn.addEventListener('click', function() {

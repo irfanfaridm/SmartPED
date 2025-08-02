@@ -17,13 +17,35 @@ class IndihomeDocumentController extends Controller
             $query->where(function($q) use ($searchTerm) {
                 $q->where('nama_dokumen', 'LIKE', '%' . $searchTerm . '%')
                   ->orWhere('lokasi', 'LIKE', '%' . $searchTerm . '%')
-                  ->orWhere('keterangan', 'LIKE', '%' . $searchTerm . '%');
+                  ->orWhere('keterangan', 'LIKE', '%' . $searchTerm . '%')
+                  ->orWhere('site_code', 'LIKE', '%' . $searchTerm . '%')
+                  ->orWhere('order_reference', 'LIKE', '%' . $searchTerm . '%');
             });
         }
         
         // Filter berdasarkan lokasi
         if ($request->filled('lokasi')) {
             $query->where('lokasi', $request->lokasi);
+        }
+        
+        // Filter berdasarkan project type
+        if ($request->filled('project_type')) {
+            $query->where('project_type', $request->project_type);
+        }
+        
+        // Filter berdasarkan implementation status
+        if ($request->filled('implementation_status')) {
+            $query->where('implementation_status', $request->implementation_status);
+        }
+        
+        // Filter berdasarkan document category
+        if ($request->filled('document_category')) {
+            $query->where('document_category', $request->document_category);
+        }
+        
+        // Filter berdasarkan site code
+        if ($request->filled('site_code')) {
+            $query->bySiteCode($request->site_code);
         }
         
         // Filter berdasarkan tanggal
@@ -51,20 +73,40 @@ class IndihomeDocumentController extends Controller
         // Filter documents with coordinates for map display
         $documentsWithCoords = $documents->where('latitude', '!=', null)->where('longitude', '!=', null);
         
-        // Debug: Log the documents with coordinates
-        \Log::info('Documents with coordinates:', [
-            'count' => $documentsWithCoords->count(),
-            'data' => $documentsWithCoords->toArray()
-        ]);
+        // Get filter options for view
+        $projectTypes = \App\Models\IndihomeDocument::PROJECT_TYPES;
+        $implementationStatuses = \App\Models\IndihomeDocument::IMPLEMENTATION_STATUSES;
+        $documentCategories = \App\Models\IndihomeDocument::DOCUMENT_CATEGORIES;
         
-        return view('indihome.index', compact('documents', 'lokasiList', 'documentsWithCoords'));
+        return view('indihome.index', compact(
+            'documents', 
+            'lokasiList', 
+            'documentsWithCoords',
+            'projectTypes',
+            'implementationStatuses',
+            'documentCategories'
+        ));
     }
 
     public function create()
     {
-        // Ambil lokasi unik dari dokumen yang sudah ada untuk dropdown
-        $lokasiList = \App\Models\IndihomeDocument::select('lokasi')->distinct()->pluck('lokasi');
-        return view('indihome.create', compact('lokasiList'));
+        // Ambil daftar kabupaten/kota dari file data
+        $lokasiList = include(app_path('Data/KabupatenKotaList.php'));
+        // Ambil data koordinat
+        $koordinatData = include(app_path('Data/KoordinatLokasi.php'));
+        
+        // Data untuk dropdown studi kasus
+        $projectTypes = \App\Models\IndihomeDocument::PROJECT_TYPES;
+        $implementationStatuses = \App\Models\IndihomeDocument::IMPLEMENTATION_STATUSES;
+        $documentCategories = \App\Models\IndihomeDocument::DOCUMENT_CATEGORIES;
+        
+        return view('indihome.create', compact(
+            'lokasiList', 
+            'koordinatData',
+            'projectTypes',
+            'implementationStatuses',
+            'documentCategories'
+        ));
     }
 
     public function store(\Illuminate\Http\Request $request)
@@ -79,6 +121,17 @@ class IndihomeDocumentController extends Controller
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
             'selected_date' => 'nullable|date',
+            // Validasi field baru
+            'site_code' => 'nullable|string|max:100',
+            'project_type' => 'nullable|in:edge_otn,mini_olt,ftth,bts_upgrade,other',
+            'implementation_status' => 'nullable|in:planning,implementation,testing,completed,on_hold,cancelled',
+            'equipment_specs' => 'nullable|string',
+            'capacity_info' => 'nullable|string',
+            'order_reference' => 'nullable|string|max:255',
+            'document_category' => 'nullable|in:technical_spec,progress_report,testing_result,completion_report,maintenance_log,other',
+            'technical_details' => 'nullable|string',
+            'completion_date' => 'nullable|date',
+            'remarks' => 'nullable|string',
         ]);
 
         // Validasi lokasi
@@ -97,6 +150,18 @@ class IndihomeDocumentController extends Controller
         $doc->keterangan = $request->keterangan;
         $doc->user_id = auth()->id();
         
+        // Set field baru untuk studi kasus
+        $doc->site_code = $request->site_code;
+        $doc->project_type = $request->project_type;
+        $doc->implementation_status = $request->implementation_status;
+        $doc->equipment_specs = $request->equipment_specs;
+        $doc->capacity_info = $request->capacity_info;
+        $doc->order_reference = $request->order_reference;
+        $doc->document_category = $request->document_category;
+        $doc->technical_details = $request->technical_details;
+        $doc->completion_date = $request->completion_date;
+        $doc->remarks = $request->remarks;
+        
         // Set custom date if provided
         if ($request->filled('selected_date')) {
             $doc->created_at = $request->selected_date . ' ' . now()->format('H:i:s');
@@ -111,8 +176,24 @@ class IndihomeDocumentController extends Controller
     public function edit($id)
     {
         $document = \App\Models\IndihomeDocument::findOrFail($id);
-        $lokasiList = \App\Models\IndihomeDocument::select('lokasi')->distinct()->pluck('lokasi');
-        return view('indihome.edit', compact('document', 'lokasiList'));
+        // Ambil daftar kabupaten/kota dari file data
+        $lokasiList = include(app_path('Data/KabupatenKotaList.php'));
+        // Ambil data koordinat
+        $koordinatData = include(app_path('Data/KoordinatLokasi.php'));
+        
+        // Data untuk dropdown studi kasus
+        $projectTypes = \App\Models\IndihomeDocument::PROJECT_TYPES;
+        $implementationStatuses = \App\Models\IndihomeDocument::IMPLEMENTATION_STATUSES;
+        $documentCategories = \App\Models\IndihomeDocument::DOCUMENT_CATEGORIES;
+        
+        return view('indihome.edit', compact(
+            'document', 
+            'lokasiList', 
+            'koordinatData',
+            'projectTypes',
+            'implementationStatuses',
+            'documentCategories'
+        ));
     }
 
     public function update(\Illuminate\Http\Request $request, $id)
@@ -129,6 +210,17 @@ class IndihomeDocumentController extends Controller
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
             'selected_date' => 'nullable|date',
+            // Validasi field baru
+            'site_code' => 'nullable|string|max:100',
+            'project_type' => 'nullable|in:edge_otn,mini_olt,ftth,bts_upgrade,other',
+            'implementation_status' => 'nullable|in:planning,implementation,testing,completed,on_hold,cancelled',
+            'equipment_specs' => 'nullable|string',
+            'capacity_info' => 'nullable|string',
+            'order_reference' => 'nullable|string|max:255',
+            'document_category' => 'nullable|in:technical_spec,progress_report,testing_result,completion_report,maintenance_log,other',
+            'technical_details' => 'nullable|string',
+            'completion_date' => 'nullable|date',
+            'remarks' => 'nullable|string',
         ]);
 
         // Validasi lokasi
@@ -141,6 +233,18 @@ class IndihomeDocumentController extends Controller
         $document->latitude = $request->latitude;
         $document->longitude = $request->longitude;
         $document->keterangan = $request->keterangan;
+
+        // Update field baru untuk studi kasus
+        $document->site_code = $request->site_code;
+        $document->project_type = $request->project_type;
+        $document->implementation_status = $request->implementation_status;
+        $document->equipment_specs = $request->equipment_specs;
+        $document->capacity_info = $request->capacity_info;
+        $document->order_reference = $request->order_reference;
+        $document->document_category = $request->document_category;
+        $document->technical_details = $request->technical_details;
+        $document->completion_date = $request->completion_date;
+        $document->remarks = $request->remarks;
 
         // Update file jika ada
         if ($request->hasFile('file')) {
