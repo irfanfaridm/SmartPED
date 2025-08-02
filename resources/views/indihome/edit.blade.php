@@ -321,8 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
             latitudeInput.value = coords.lat;
             longitudeInput.value = coords.lng;
             
-            // Tampilkan notifikasi sukses
-            showCoordinateNotification(`Koordinat ${locationName} berhasil diisi otomatis!`);
+            // Notifikasi telah dihapus
         } else {
             // Kosongkan koordinat jika lokasi tidak ditemukan
             latitudeInput.value = '';
@@ -330,34 +329,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Fungsi untuk menampilkan notifikasi
-    function showCoordinateNotification(message) {
-        // Hapus notifikasi yang sudah ada
-        const existingNotification = document.querySelector('.coordinate-notification');
-        if (existingNotification) {
-            existingNotification.remove();
-        }
-
-        // Buat notifikasi baru
-        const notification = document.createElement('div');
-        notification.className = 'coordinate-notification fixed top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 transform transition-all duration-300';
-        notification.innerHTML = `
-            <div class="flex items-center gap-2">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                </svg>
-                <span>${message}</span>
-            </div>
-        `;
-        
-        document.body.appendChild(notification);
-        
-        // Hapus notifikasi setelah 3 detik
-        setTimeout(() => {
-            notification.style.transform = 'translateX(100%)';
-            setTimeout(() => notification.remove(), 300);
-        }, 3000);
-    }
+    // Fungsi notifikasi telah dihapus
 
     // Event listener untuk dropdown lokasi
     dropdown.addEventListener('change', function() {
@@ -680,4 +652,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-@endsection 
+@endsection

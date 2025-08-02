@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-xl mx-auto mt-8 bg-white p-6 rounded shadow">
+<div class="max-w-6xl mx-auto mt-8 bg-white p-6 rounded shadow">
     <h2 class="text-2xl font-bold mb-4 text-red-600">Upload Dokumen Indihome</h2>
     @if ($errors->any())
         <div class="mb-4 text-red-600">
@@ -44,33 +44,55 @@
         </div>
         <div class="mb-4">
             <label class="block mb-1 font-semibold text-gray-700">Koordinat Lokasi</label>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block mb-1 text-sm text-gray-600">Latitude</label>
-                    <input type="number" id="latitude" name="latitude" step="any" placeholder="Contoh: -6.2088" class="w-full rounded border-gray-300 bg-white text-gray-900" value="{{ old('latitude') }}">
-                    <small class="text-gray-500">Contoh: -6.2088 (Jakarta Selatan)</small>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-3">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block mb-1 text-sm text-gray-600">Latitude</label>
+                            <input type="number" id="latitude" name="latitude" step="any" placeholder="Contoh: -6.2088" class="w-full rounded border-gray-300 bg-white text-gray-900" value="{{ old('latitude') }}">
+                            <small class="text-gray-500">Contoh: -6.2088 (Jakarta)</small>
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-sm text-gray-600">Longitude</label>
+                            <input type="number" id="longitude" name="longitude" step="any" placeholder="Contoh: 106.8456" class="w-full rounded border-gray-300 bg-white text-gray-900" value="{{ old('longitude') }}">
+                            <small class="text-gray-500">Contoh: 106.8456 (Jakarta)</small>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <p class="text-sm text-blue-700">
+                            <strong>💡 Tips:</strong> Koordinat bersifat opsional. Klik "Pilih Lokasi di Peta" untuk memilih koordinat secara visual, atau dapatkan koordinat dari Google Maps dengan klik kanan pada lokasi dan pilih "What's here?"
+                        </p>
+                        <p class="text-xs text-blue-600 mt-2">
+                            <strong>Note:</strong> Jika peta tidak muncul, silakan masukkan koordinat secara manual.
+                        </p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button type="button" onclick="showOpenLayersCoordinatePicker()" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors text-sm flex items-center justify-center">
+                            <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-4 h-4 mr-1'>
+                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z'/>
+                            </svg>
+                            Pilih Lokasi di Peta
+                        </button>
+                        <button type="button" onclick="clearCoordinates()" class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition-colors text-sm flex items-center justify-center">
+                            <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-4 h-4 mr-1'>
+                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'/>
+                            </svg>
+                            Hapus Koordinat
+                        </button>
+                    </div>
                 </div>
-                <div>
-                    <label class="block mb-1 text-sm text-gray-600">Longitude</label>
-                    <input type="number" id="longitude" name="longitude" step="any" placeholder="Contoh: 106.8456" class="w-full rounded border-gray-300 bg-white text-gray-900" value="{{ old('longitude') }}">
-                    <small class="text-gray-500">Contoh: 106.8456 (Jakarta Selatan)</small>
+                <div class="relative rounded-lg overflow-hidden border border-gray-200 shadow-inner h-64 bg-gray-100">
+                    <div id="previewMap" class="w-full h-full"></div>
+                    <div id="previewMapPlaceholder" class="absolute inset-0 flex items-center justify-center bg-gray-100">
+                        <div class="text-center p-4">
+                            <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-12 h-12 mx-auto mb-3 text-gray-400'>
+                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z'/>
+                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15 11a3 3 0 11-6 0 3 3 0 016 0z'/>
+                            </svg>
+                            <p class="text-gray-500">Pilih lokasi pada peta untuk melihat preview</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="mt-3">
-                <button type="button" onclick="showCoordinatePicker()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors text-sm">
-                    <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-4 h-4 inline mr-1'>
-                        <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z'/>
-                    </svg>
-                    Pilih Lokasi di Peta
-                </button>
-            </div>
-            <div class="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <p class="text-sm text-blue-700">
-                    <strong>💡 Tips:</strong> Koordinat bersifat opsional. Klik "Pilih Lokasi di Peta" untuk memilih koordinat secara visual, atau dapatkan koordinat dari Google Maps dengan klik kanan pada lokasi dan pilih "What's here?"
-                </p>
-                <p class="text-xs text-blue-600 mt-2">
-                    <strong>Note:</strong> Jika peta tidak muncul, silakan masukkan koordinat secara manual atau hubungi administrator untuk setup Google Maps API.
-                </p>
             </div>
         </div>
         <div class="mb-4">
@@ -282,8 +304,7 @@ document.addEventListener('DOMContentLoaded', function() {
             latitudeInput.value = coords.lat;
             longitudeInput.value = coords.lng;
             
-            // Tampilkan notifikasi sukses
-            showCoordinateNotification(`Koordinat ${locationName} berhasil diisi otomatis!`);
+            // Notifikasi telah dihapus
         } else {
             // Kosongkan koordinat jika lokasi tidak ditemukan
             latitudeInput.value = '';
@@ -291,33 +312,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Fungsi untuk menampilkan notifikasi
-    function showCoordinateNotification(message) {
-        // Hapus notifikasi yang sudah ada
-        const existingNotification = document.querySelector('.coordinate-notification');
-        if (existingNotification) {
-            existingNotification.remove();
-        }
-
-        // Buat notifikasi baru
-        const notification = document.createElement('div');
-        notification.className = 'coordinate-notification fixed top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 transform transition-all duration-300';
-        notification.innerHTML = `
-            <div class="flex items-center gap-2">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                </svg>
-                <span>${message}</span>
-            </div>
-        `;
-        
-        document.body.appendChild(notification);
-        
-        // Hapus notifikasi setelah 3 detik
-        setTimeout(() => {
-            notification.style.transform = 'translateX(100%)';
-            setTimeout(() => notification.remove(), 300);
-        }, 3000);
+    // Fungsi notifikasi telah dihapus
     }
 
     // Event listener untuk dropdown lokasi
@@ -616,29 +611,115 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<!-- Google Maps API for coordinate picker -->
+<!-- OpenLayers Map Scripts -->
 <script>
-// Load Google Maps API with error handling
-function loadGoogleMapsAPI() {
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key={{ config('maps.google_maps_api_key') }}&callback=handleMapsAPILoad`;
-    script.async = true;
-    script.defer = true;
-    script.onerror = function() {
-        console.error('Failed to load Google Maps API');
-        // Show fallback message if needed
-    };
-    document.head.appendChild(script);
+let previewOlMap;
+let previewMarkerSource;
+
+// Function to clear coordinates
+function clearCoordinates() {
+    document.getElementById('latitude').value = '';
+    document.getElementById('longitude').value = '';
+    updatePreviewMap();
 }
 
-function handleMapsAPILoad() {
-    console.log('Google Maps API loaded successfully');
+// Function to update preview map based on coordinates
+function updatePreviewMap() {
+    const lat = parseFloat(document.getElementById('latitude').value);
+    const lng = parseFloat(document.getElementById('longitude').value);
+    
+    // Show/hide placeholder based on coordinates
+    const placeholder = document.getElementById('previewMapPlaceholder');
+    
+    if (isNaN(lat) || isNaN(lng)) {
+        if (placeholder) placeholder.style.display = 'flex';
+        return;
+    }
+    
+    if (placeholder) placeholder.style.display = 'none';
+    
+    // Initialize map if not already initialized
+    if (!previewOlMap) {
+        previewOlMap = new ol.Map({
+            target: 'previewMap',
+            pixelRatio: 2,
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM({
+                        crossOrigin: 'anonymous',
+                        imageSmoothing: false
+                    })
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([lng, lat]),
+                zoom: 15
+            })
+        });
+        
+        // Create marker source and layer
+        previewMarkerSource = new ol.source.Vector();
+        
+        const markerStyle = new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 8,
+                fill: new ol.style.Fill({color: '#e60000'}),
+                stroke: new ol.style.Stroke({
+                    color: '#ffffff',
+                    width: 2
+                })
+            })
+        });
+        
+        const markerLayer = new ol.layer.Vector({
+            source: previewMarkerSource,
+            style: markerStyle
+        });
+        
+        previewOlMap.addLayer(markerLayer);
+    } else {
+        // Update view center
+        previewOlMap.getView().setCenter(ol.proj.fromLonLat([lng, lat]));
+        previewOlMap.getView().setZoom(15);
+    }
+    
+    // Clear previous markers
+    previewMarkerSource.clear();
+    
+    // Add marker
+    const feature = new ol.Feature({
+        geometry: new ol.geom.Point(ol.proj.fromLonLat([lng, lat]))
+    });
+    
+    previewMarkerSource.addFeature(feature);
 }
 
-// Load API when page loads
+// Listen for coordinate changes
 document.addEventListener('DOMContentLoaded', function() {
-    loadGoogleMapsAPI();
+    const latInput = document.getElementById('latitude');
+    const lngInput = document.getElementById('longitude');
+    
+    if (latInput && lngInput) {
+        latInput.addEventListener('change', updatePreviewMap);
+        lngInput.addEventListener('change', updatePreviewMap);
+        
+        // Initialize preview map if coordinates are present
+        updatePreviewMap();
+    }
 });
+
+// Override the confirmOpenLayersCoordinate function to update preview map
+const originalConfirmOpenLayersCoordinate = window.confirmOpenLayersCoordinate;
+window.confirmOpenLayersCoordinate = function() {
+    if (window.selectedLat && window.selectedLng) {
+        document.getElementById('latitude').value = window.selectedLat.toFixed(6);
+        document.getElementById('longitude').value = window.selectedLng.toFixed(6);
+        updatePreviewMap();
+        closeOpenLayersCoordinatePicker();
+    } else {
+        alert('Silakan pilih lokasi di peta terlebih dahulu');
+    }
+};
 </script>
 
-@endsection 
+@endsection

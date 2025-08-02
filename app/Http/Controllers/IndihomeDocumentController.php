@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Events\DocumentUploaded;
 
 class IndihomeDocumentController extends Controller
 {
@@ -68,7 +69,7 @@ class IndihomeDocumentController extends Controller
             }
         }
         
-        $documents = $query->orderBy('created_at', 'desc')->get();
+        $documents = $query->with('user')->orderBy('created_at', 'desc')->get();
         
         // Filter documents with coordinates for map display
         $documentsWithCoords = $documents->where('latitude', '!=', null)->where('longitude', '!=', null);
@@ -170,12 +171,22 @@ class IndihomeDocumentController extends Controller
         
         $doc->save();
 
+        // Broadcast event untuk real-time notification
+        event(new DocumentUploaded($doc, auth()->user()));
+
         return redirect()->route('indihome.index')->with('success', 'Dokumen berhasil diupload!');
     }
 
     public function edit($id)
     {
         $document = \App\Models\IndihomeDocument::findOrFail($id);
+        
+        // Cek apakah user yang login adalah pemilik dokumen
+        if ($document->user_id !== auth()->id()) {
+            return redirect()->route('indihome.index')
+                ->with('error', 'Anda tidak memiliki izin untuk mengedit dokumen ini.');
+        }
+        
         // Ambil daftar kabupaten/kota dari file data
         $lokasiList = include(app_path('Data/KabupatenKotaList.php'));
         // Ambil data koordinat
@@ -199,6 +210,12 @@ class IndihomeDocumentController extends Controller
     public function update(\Illuminate\Http\Request $request, $id)
     {
         $document = \App\Models\IndihomeDocument::findOrFail($id);
+        
+        // Cek apakah user yang login adalah pemilik dokumen
+        if ($document->user_id !== auth()->id()) {
+            return redirect()->route('indihome.index')
+                ->with('error', 'Anda tidak memiliki izin untuk mengubah dokumen ini.');
+        }
         
         // Tentukan lokasi yang akan digunakan
         $lokasi = $request->lokasi ?: $request->lokasi_new;
@@ -272,6 +289,12 @@ class IndihomeDocumentController extends Controller
     {
         $document = \App\Models\IndihomeDocument::findOrFail($id);
         
+        // Cek apakah user yang login adalah pemilik dokumen
+        if ($document->user_id !== auth()->id()) {
+            return redirect()->route('indihome.index')
+                ->with('error', 'Anda tidak memiliki izin untuk menghapus dokumen ini.');
+        }
+        
         // Hapus file dari storage
         if ($document->file_path && \Storage::disk('public')->exists($document->file_path)) {
             \Storage::disk('public')->delete($document->file_path);
@@ -281,4 +304,4 @@ class IndihomeDocumentController extends Controller
 
         return redirect()->route('indihome.index')->with('success', 'Dokumen berhasil dihapus!');
     }
-} 
+}

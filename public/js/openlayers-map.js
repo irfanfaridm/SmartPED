@@ -25,9 +25,13 @@ function initOpenLayersMap(lat, lng, title, location) {
     // Create map
     olMap = new ol.Map({
         target: 'olMap',
+        pixelRatio: 2, // Higher pixel ratio for sharper rendering
         layers: [
             new ol.layer.Tile({
-                source: new ol.source.OSM()
+                source: new ol.source.OSM({
+                    crossOrigin: 'anonymous',
+                    imageSmoothing: false // Disable image smoothing for sharper tiles
+                })
             })
         ],
         view: new ol.View({
@@ -217,9 +221,13 @@ function initOpenLayersOverviewMap(documents) {
     try {
         olOverviewMap = new ol.Map({
             target: 'olOverviewMap',
+            pixelRatio: 2, // Higher pixel ratio for sharper rendering
             layers: [
                 new ol.layer.Tile({
-                    source: new ol.source.OSM()
+                    source: new ol.source.OSM({
+                        crossOrigin: 'anonymous',
+                        imageSmoothing: false // Disable image smoothing for sharper tiles
+                    })
                 })
             ],
             view: new ol.View({

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verifikasi Email - SmartPED</title>
+    <title>Two-Factor Challenge - SmartPED</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -28,10 +28,10 @@
                         SmartPED
                     </h1>
                     <p class="text-xl font-semibold mb-6">
-                        Verifikasi Email untuk Keamanan Akun
+                        Two-Factor Authentication
                     </p>
                     <p class="text-red-100 leading-relaxed">
-                        Untuk memastikan keamanan akun Anda, kami perlu memverifikasi alamat email Anda. Silakan cek email Anda dan klik link verifikasi yang telah kami kirim.
+                        Untuk keamanan tambahan, silakan masukkan kode autentikasi dari aplikasi authenticator Anda atau kode recovery yang telah kami kirimkan.
                     </p>
                 </div>
                 
@@ -39,24 +39,24 @@
                     <div class="flex items-center space-x-4">
                         <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                             </svg>
                         </div>
                         <div>
-                            <h3 class="font-semibold">Email Verifikasi</h3>
-                            <p class="text-sm text-red-100">Link verifikasi dikirim ke email Anda</p>
+                            <h3 class="font-semibold">Keamanan Maksimal</h3>
+                            <p class="text-sm text-red-100">Proteksi tambahan untuk akun Anda</p>
                         </div>
                     </div>
                     
                     <div class="flex items-center space-x-4">
                         <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                             </svg>
                         </div>
                         <div>
-                            <h3 class="font-semibold">Keamanan Terjamin</h3>
-                            <p class="text-sm text-red-100">Proses verifikasi yang aman dan terpercaya</p>
+                            <h3 class="font-semibold">Akses Terverifikasi</h3>
+                            <p class="text-sm text-red-100">Hanya Anda yang dapat mengakses akun</p>
                         </div>
                     </div>
                     
@@ -67,15 +67,15 @@
                             </svg>
                         </div>
                         <div>
-                            <h3 class="font-semibold">Akses Penuh</h3>
-                            <p class="text-sm text-red-100">Setelah verifikasi, akses semua fitur SmartPED</p>
+                            <h3 class="font-semibold">Proses Cepat</h3>
+                            <p class="text-sm text-red-100">Verifikasi selesai dalam hitungan detik</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- Right Column - Verify Email Form -->
+        <!-- Right Column - Two-Factor Challenge Form -->
         <div class="w-full lg:w-1/2 flex items-center justify-center p-8">
             <div class="w-full max-w-md">
                 <!-- Logo -->
@@ -83,37 +83,51 @@
                     <div class="flex items-center justify-center mb-4">
                         <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center mr-3">
                             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                             </svg>
                         </div>
                         <h1 class="text-3xl font-bold text-gray-900">SMARTPED</h1>
                     </div>
-                    <h2 class="text-2xl font-semibold text-gray-900 mb-2">Verifikasi Email</h2>
-                    <p class="text-gray-600">Terima kasih telah mendaftar! Sebelum memulai, dapatkah Anda memverifikasi alamat email Anda dengan mengklik link yang baru saja kami kirimkan kepada Anda? Jika Anda tidak menerima email tersebut, kami akan dengan senang hati mengirimkan email yang lain.</p>
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-2">Two-Factor Challenge</h2>
+                    <p class="text-gray-600">Silakan konfirmasi akses ke akun Anda dengan memasukkan kode autentikasi yang disediakan oleh aplikasi authenticator Anda.</p>
                 </div>
                 
-                @if (session('status') == 'verification-link-sent')
-                    <div class="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
-                        Link verifikasi baru telah dikirim ke alamat email yang Anda berikan saat pendaftaran.
-                    </div>
-                @endif
-                
-                <!-- Verify Email Form -->
-                <form method="POST" action="{{ route('verification.send') }}" class="space-y-6">
+                <!-- Two-Factor Challenge Form -->
+                <form method="POST" action="{{ route('two-factor.login') }}" class="space-y-6">
                     @csrf
+                    
+                    <div>
+                        <label for="code" class="block text-sm font-medium text-gray-700 mb-2">
+                            Kode Autentikasi
+                        </label>
+                        <input type="text" 
+                               id="code" 
+                               name="code" 
+                               required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
+                               placeholder="Masukkan kode 6 digit">
+                        @error('code')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    
+                    <div>
+                        <label for="recovery_code" class="block text-sm font-medium text-gray-700 mb-2">
+                            Kode Recovery
+                        </label>
+                        <input type="text" 
+                               id="recovery_code" 
+                               name="recovery_code" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
+                               placeholder="Atau masukkan kode recovery">
+                        @error('recovery_code')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
                     
                     <button type="submit" 
                             class="w-full bg-red-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors">
-                        Kirim Ulang Email Verifikasi
-                    </button>
-                </form>
-                
-                <!-- Logout Form -->
-                <form method="POST" action="{{ route('logout') }}" class="mt-4">
-                    @csrf
-                    <button type="submit" 
-                            class="w-full bg-gray-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors">
-                        Logout
+                        Konfirmasi
                     </button>
                 </form>
                 
@@ -127,9 +141,8 @@
                 <!-- Back to Login -->
                 <div class="text-center">
                     <p class="text-sm text-gray-600">
-                        Sudah verifikasi email? 
                         <a href="{{ route('login') }}" class="text-red-600 hover:text-red-800 font-semibold transition-colors">
-                            Kembali ke login
+                            Kembali ke Login
                         </a>
                     </p>
                 </div>
@@ -137,4 +150,4 @@
         </div>
     </div>
 </body>
-</html>
+</html> 

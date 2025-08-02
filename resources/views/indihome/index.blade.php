@@ -2,8 +2,11 @@
 
 @section('content')
 @include('components.openlayers-map')
+
+
+
 <div class="flex justify-center items-center min-h-screen pb-12 bg-gradient-to-br from-white via-red-50 to-white">
-    <div class="max-w-2xl mx-auto mt-8 bg-white p-6 rounded shadow">
+    <div class="max-w-6xl mx-auto mt-8 bg-white p-6 rounded shadow">
         <div class="flex justify-between items-center mb-8">
             <div class="flex items-center gap-3">
                 <span class="text-3xl text-red-600">
@@ -451,113 +454,29 @@
             </div>
         @endif
         
-        <!-- Daftar Semua Lokasi Dokumen -->
-        @php
-            $allLocations = $documents->groupBy('lokasi')->map(function($docs, $location) {
-                return [
-                    'lokasi' => $location,
-                    'count' => $docs->count(),
-                    'documents' => $docs,
-                    'hasCoordinates' => $docs->where('latitude', '!=', null)->where('longitude', '!=', null)->count() > 0,
-                    'coordinates' => $docs->where('latitude', '!=', null)->where('longitude', '!=', null)->first()
-                ];
-            });
-        @endphp
-        
-        @if($allLocations->count() > 0)
-        <div class="mb-6">
-            <h3 class="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
-                <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-5 h-5 text-red-600'>
-                    <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z'/>
-                </svg>
-                Daftar Semua Lokasi Dokumen
-            </h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                @foreach($allLocations as $locationData)
-                <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div class="flex items-center justify-between mb-3">
-                        <h4 class="font-semibold text-gray-800 text-lg">{{ $locationData['lokasi'] }}</h4>
-                        <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                            {{ $locationData['count'] }} dokumen
-                        </span>
-                    </div>
-                    
-                    <div class="space-y-2">
-                        @if($locationData['hasCoordinates'])
-                            <div class="flex items-center gap-2 text-sm text-gray-600">
-                                <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-4 h-4 text-green-600'>
-                                    <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z'/>
-                                </svg>
-                                <span>Koordinat tersedia</span>
-                            </div>
-                            <button onclick="showOpenLayersMap({{ $locationData['coordinates']->latitude }}, {{ $locationData['coordinates']->longitude }}, '{{ $locationData['lokasi'] }}', '{{ $locationData['lokasi'] }}')" 
-                                    class="text-red-600 hover:text-red-800 transition-colors text-sm font-medium flex items-center gap-1">
-                                <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-4 h-4'>
-                                    <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z'/>
-                                    <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15 11a3 3 0 11-6 0 3 3 0 016 0z'/>
-                                </svg>
-                                Lihat di Peta
-                            </button>
-                        @else
-                            <div class="flex items-center gap-2 text-sm text-gray-500">
-                                <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-4 h-4 text-gray-400'>
-                                    <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z'/>
-                                </svg>
-                                <span>Koordinat belum tersedia</span>
-                            </div>
-                        @endif
-                        
-                        <div class="text-xs text-gray-500">
-                            Dokumen terbaru: {{ $locationData['documents']->first()->created_at->format('d/m/Y') }}
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-        @endif
-        
         <!-- Peta Lokasi Dokumen -->
-        @php
-            $documentsWithCoords = $documents->where('latitude', '!=', null)->where('longitude', '!=', null);
-        @endphp
-        <!-- Peta Lokasi Dokumen - Always Visible -->
-        <div class="mb-6">
-            <h3 class="text-lg font-semibold text-gray-700 mb-3 flex items-center gap-2">
+        <div class="mb-6 bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <div class="flex items-center gap-2 mb-3">
                 <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-5 h-5 text-red-600'>
                     <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z'/>
+                    <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15 11a3 3 0 11-6 0 3 3 0 016 0z'/>
                 </svg>
-                Peta Lokasi Dokumen
-            </h3>
+                <h3 class="text-lg font-semibold text-gray-700">Peta Lokasi Dokumen</h3>
+            </div>
             
-            @if($documentsWithCoords->count() > 0)
-                <!-- Map with coordinates -->
-                <div id="olOverviewMap" class="w-full h-64 rounded-lg border border-gray-200 bg-gray-50 relative">
-                    <div id="olMapLoading" class="absolute inset-0 flex items-center justify-center bg-gray-50 text-gray-500">
-                        <div class="text-center">
-                            <svg class="animate-spin h-8 w-8 mx-auto mb-2 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            <p>Memuat peta...</p>
-                        </div>
+            <div class="relative rounded-lg overflow-hidden border border-gray-200 shadow-inner">
+                <div id="olOverviewMap" class="w-full h-96 rounded-lg" style="transform: translateZ(0); backface-visibility: hidden;"></div>
+                <div id="olMapLoading" class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-90">
+                    <div class="text-center">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-3"></div>
+                        <p class="text-gray-600">Memuat peta...</p>
                     </div>
                 </div>
-            @else
-                <!-- Map without coordinates - show default map -->
-                <div id="olOverviewMap" class="w-full h-64 rounded-lg border border-gray-200 bg-gray-50 relative">
-                    <div id="olMapLoading" class="absolute inset-0 flex items-center justify-center bg-gray-50 text-gray-500">
-                        <div class="text-center">
-                            <svg class="animate-spin h-8 w-8 mx-auto mb-2 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            <p>Memuat peta...</p>
-                        </div>
-                    </div>
-                </div>
-            @endif
+            </div>
+            
+            <div class="mt-3 text-sm text-gray-500">
+                <p>Peta menampilkan lokasi semua dokumen yang memiliki koordinat. Klik pada marker untuk melihat detail dokumen.</p>
+            </div>
         </div>
         
         <!-- Statistik Dokumen -->
@@ -614,55 +533,7 @@
             </div>
         </div>
 
-        <!-- Statistik Lokasi -->
-        @php
-            $totalLocations = $documents->pluck('lokasi')->unique()->count();
-            $locationsWithCoords = $documents->where('latitude', '!=', null)->where('longitude', '!=', null)->pluck('lokasi')->unique()->count();
-            $locationsWithoutCoords = $totalLocations - $locationsWithCoords;
-        @endphp
-        <div class="mb-6">
-            <h3 class="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
-                <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-5 h-5 text-red-600'>
-                    <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z'/>
-                </svg>
-                Ringkasan Lokasi Dokumen
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white p-4 rounded-lg shadow">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm opacity-90">Total Lokasi</p>
-                            <p class="text-2xl font-bold">{{ $totalLocations }}</p>
-                        </div>
-                        <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-8 h-8 opacity-80'>
-                            <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z'/>
-                        </svg>
-                    </div>
-                </div>
-                <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white p-4 rounded-lg shadow">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm opacity-90">Dengan Koordinat</p>
-                            <p class="text-2xl font-bold">{{ $locationsWithCoords }}</p>
-                        </div>
-                        <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-8 h-8 opacity-80'>
-                            <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'/>
-                        </svg>
-                    </div>
-                </div>
-                <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-4 rounded-lg shadow">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm opacity-90">Tanpa Koordinat</p>
-                            <p class="text-2xl font-bold">{{ $locationsWithoutCoords }}</p>
-                        </div>
-                        <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-8 h-8 opacity-80'>
-                            <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z'/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Ringkasan Lokasi Dokumen telah dihapus -->
 
         <div class="overflow-x-auto rounded-lg mt-2">
             <table class="min-w-full table-auto border border-gray-200 bg-white text-base font-sans">
@@ -796,20 +667,24 @@
                         </td>
                         <td class="border-t px-5 py-4 border-gray-200 text-base">
                             <div class="flex items-center gap-2">
-                                <a href="{{ route('indihome.edit', $doc->id) }}" class="text-blue-600 hover:text-blue-800 transition-colors" title="Edit">
-                                    <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-5 h-5'>
-                                        <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'/>
-                                    </svg>
-                                </a>
-                                <form method="POST" action="{{ route('indihome.destroy', $doc->id) }}" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus dokumen ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-800 transition-colors" title="Hapus">
+                                @if($doc->user_id == auth()->id())
+                                    <a href="{{ route('indihome.edit', $doc->id) }}" class="text-blue-600 hover:text-blue-800 transition-colors" title="Edit">
                                         <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-5 h-5'>
-                                            <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'/>
+                                            <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'/>
                                         </svg>
-                                    </button>
-                                </form>
+                                    </a>
+                                    <form method="POST" action="{{ route('indihome.destroy', $doc->id) }}" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus dokumen ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:text-red-800 transition-colors" title="Hapus">
+                                            <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' class='w-5 h-5'>
+                                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                @else
+                                    <span class="text-gray-400 text-sm italic">Hanya pemilik yang dapat mengedit</span>
+                                @endif
                             </div>
                         </td>
                     </tr>
@@ -871,6 +746,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// Fungsi notifikasi telah dihapus
 </script>
+
+<!-- Notifikasi telah dihapus -->
 
 @endsection
